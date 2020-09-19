@@ -11,7 +11,7 @@ public class Program {
 
     String[] words = text.split("[ .,]");
 
-    Arrays.sort(words, (a, b) -> a.compareTo(b));
+    Arrays.sort(words, (a, b) -> a.toLowerCase().compareTo(b.toLowerCase()));
 
     for(String str : words) {
       System.out.println(str);
