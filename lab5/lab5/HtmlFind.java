@@ -4,9 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
-
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Comparator;
+import java.util.Arrays;
 
 public class HtmlFind {
   private String text;
@@ -14,7 +13,7 @@ public class HtmlFind {
   final private String dirName;
 
   public HtmlFind() {
-    this("input.txt");
+    this("input.html");
   }
 
   public HtmlFind(String fileName) {
@@ -45,14 +44,13 @@ public class HtmlFind {
       letter = htmlText.charAt(i);
       if(!inTag && letter == '<') inTag = true;
 
-      if(inTag && letter == '>') {
-        inTag = false;
-        i++;
-        letter = htmlText.charAt(i);
-      }
-
       if(!inTag) {
         str.append(letter);
+      }
+
+      if(inTag && letter == '>') {
+        inTag = false;
+        letter = htmlText.charAt(i);
       }
     }
 
@@ -81,22 +79,33 @@ public class HtmlFind {
       }
     }
 
-    Map<String, Integer> map = new HashMap<String, Integer>();
-
     String[] tmpMas = strTag.toString().split("\n");
 
-    for(String str : tmpMas) {
-      map.put(str, map.get(str) != null ? map.get(str) + 1 : 1);
-    }
+    Comparator<String> comp = (a1, a2) -> {
+      int len1 = a1.length();
+      int len2 = a2.length();
+      if(len1 > len2) return 1;
+      if(len1 < len2) return -1;
+      return a1.compareTo(a2);
+    };
 
-    while(map.size() > 0) {
-      String minLine = (String)map.keySet().toArray()[0];
-      for(int j = 0; j < map.size(); j++) {
-        if(map.get(map.keySet().toArray()[j]) < map.get(minLine)) minLine = (String)map.keySet().toArray()[j]; 
-      }
-      this.tags += minLine + "\n";
-      map.remove(minLine);
-    }
+    Arrays.sort(tmpMas, comp);
+    for(String str : tmpMas) this.tags += str + "\n";
+
+    //Map<String, Integer> map = new HashMap<String, Integer>();
+
+    // for(String str : tmpMas) {
+    //   map.put(str, map.get(str) != null ? map.get(str) + 1 : 1);
+    // }
+
+    // while(map.size() > 0) {
+    //   String minLine = (String)map.keySet().toArray()[0];
+    //   for(int j = 0; j < map.size(); j++) {
+    //     if(map.get(map.keySet().toArray()[j]) < map.get(minLine)) minLine = (String)map.keySet().toArray()[j]; 
+    //   }
+    //   this.tags += minLine + "\n";
+    //   map.remove(minLine);
+    // }
   }
 
   public String getTags() {
@@ -109,7 +118,6 @@ public class HtmlFind {
 
   public int findLine(String line) {
     String[] mass = this.text.split("\n");
-    System.out.println(line);
 
     for(int i = 0; i < mass.length; i++) {
       if(mass[i].indexOf(line) != -1) return i;

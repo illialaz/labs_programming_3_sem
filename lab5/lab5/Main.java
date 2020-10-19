@@ -9,10 +9,10 @@ import java.util.Scanner;
 public class Main {
   public static void main(String[] args) {
     String dirName = "/Users/illia/programming/labs_programming_3_sem/lab5/lab5/";
-    String fileName = "input1.html";
+    String fileName = "input3.html";
     HtmlFind htmlText = new HtmlFind(fileName);
   
-    File input2 = new File(dirName + "input2.in");
+    File input2 = new File(dirName + "input4.in");
 
     try {
       FileWriter output1 = new FileWriter(dirName + "output1.out");
@@ -27,7 +27,7 @@ public class Main {
 
     try (Scanner sc = new Scanner(input2, StandardCharsets.UTF_8.name())) {
 			while (sc.hasNextLine()){
-        linesToFind += sc.nextLine();
+        linesToFind += sc.nextLine() + '\n';
 			}
 		}
 		catch (IOException e) {
@@ -36,7 +36,6 @@ public class Main {
 
     String[] masLines = linesToFind.split("[;\n]+");
 
-    for(String line : masLines) System.out.println(line);
 
     try {
       FileWriter output2 = new FileWriter(dirName + "output2.out");
@@ -51,5 +50,6 @@ public class Main {
       System.out.println("An error occurred while writing to output1.out.");
       e.printStackTrace();
     }
+    System.out.println(htmlText.getText());
   }
 }
